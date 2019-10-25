@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Janken ~ Pierre, Feuille, Ciseaux</title>
+  <link rel="stylesheet" href="style.css">
+  <script async src="script.js"></script>
+</head>
+<body>
+  <main>
+    <h1>Janken</h1>
+    <p><button id="reset">Reset</button></p>
+
+    <div id="gameboard">
+
+      <div id="player">
+        <button class="move" id="player-rock" title="Rock"><span>Rock</span></button>
+        <button class="move" id="player-paper" value="Paper"><span>Paper</span></button>
+        <button class="move" id="player-scissors" value="Scissors"><span>Scissors</span></button>
+        <div class="score">
+          <p>Vous</p>
+          <ul id="player-score">
+            <li>&#10060;</li>
+            <li>&#10060;</li>
+            <li>&#10060;</li>
+          </ul>
+        </div>
+      </div>
+
+      <div id="vs">VS</div>
+
+      <div id="computer">
+        <button class="move" id="computer-rock" title="Rock"><span>Rock</span></button>
+        <button class="move" id="computer-paper" value="Paper"><span>Paper</span></button>
+        <button class="move" id="computer-scissors" value="Scissors"><span>Scissors</span></button>
+
+        <div class="score">
+          <p>Ordinateur</p>
+          <ul id="computer-score">
+              <li>&#10060;</li>
+              <li>&#10060;</li>
+              <li>&#10060;</li>
+            </ul>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div id="action">Play !</div>
+    <footer><p>Images by Studio Fibonacci from the Noun Project</p></footer>
+    
+  </main>
+</body>
+</html>
