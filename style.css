@@ -40,7 +40,7 @@ main {
   padding: 2rem;
   box-sizing: border-box;
   text-align: center;
-  margin: auto;
+  margin: auto 10px auto 10px;
 }
 
 /* Moves */
