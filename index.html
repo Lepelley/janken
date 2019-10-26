@@ -22,9 +22,6 @@
         <div class="score">
           <p>Vous</p>
           <ul id="player-score">
-            <li>&#10060;</li>
-            <li>&#10060;</li>
-            <li>&#10060;</li>
           </ul>
         </div>
       </div>
@@ -39,10 +36,7 @@
         <div class="score">
           <p>Ordinateur</p>
           <ul id="computer-score">
-              <li>&#10060;</li>
-              <li>&#10060;</li>
-              <li>&#10060;</li>
-            </ul>
+          </ul>
         </div>
 
       </div>
@@ -50,6 +44,16 @@
     </div>
 
     <div id="action">Play !</div>
+
+    <div id="configuration">
+      <p>
+        <label for="moveToWin">Moves to win</label> <input type="number" id="moveToWin" step="1" min="1" max="100" value="3">
+      </p> 
+      <p>
+        <label for="secondesBetWeenMove">Secondes between moves</label> <input type="number" id="secondesBetWeenMove" step="1" min="0" max="10" value="2"> 
+      </p>
+    </div>
+
     <footer><p>Images by Studio Fibonacci from the Noun Project</p></footer>
     
   </main>

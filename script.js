@@ -1,14 +1,36 @@
 const moves = ['rock', 'paper', 'scissors'];
-const timeBetweenMove = 3000;
+let secondesBetweenNextMove = 2;
+let movesToWin = 3;
+
+// reference
 const computerRock = document.getElementById('computer-rock');
 const computerPaper = document.getElementById('computer-paper');
 const computerScissors = document.getElementById('computer-scissors');
 const playerRock = document.getElementById('player-rock');
 const playerPaper = document.getElementById('player-paper');
 const playerScissors = document.getElementById('player-scissors');
-const playerScore = document.querySelectorAll('#player-score li');
-const computerScore = document.querySelectorAll('#computer-score li');
 
+/**
+ * Render scoreboard for player and computer
+ * @returns {void}
+ */
+const buildMovesToWin = () => {
+  const playerScoreBoard = document.getElementById('player-score');
+  playerScoreBoard.innerHTML = '';
+  for (let i = 0 ; i < movesToWin ; i++) {
+    const liElt = document.createElement('li');
+    liElt.textContent = '❌';
+    playerScoreBoard.appendChild(liElt);
+  }
+
+  const computerScoreBoard = document.getElementById('computer-score');
+  computerScoreBoard.innerHTML = '';
+  for (let i = 0 ; i < movesToWin ; i++) {
+    const liElt = document.createElement('li');
+    liElt.textContent = '❌';
+    computerScoreBoard.appendChild(liElt);
+  }
+}
 
 /**
  * Random move
@@ -49,19 +71,19 @@ const computerMoveRender = (move) => {
     computerRock.classList.add('choice');
     setTimeout(() => {
       computerRock.classList.remove('choice');
-    }, timeBetweenMove);
+    }, secondesBetweenNextMove*1000);
   }
   else if (move === 'paper') {
     computerPaper.classList.add('choice');
     setTimeout(() => {
       computerPaper.classList.remove('choice');
-    }, timeBetweenMove);
+    }, secondesBetweenNextMove*1000);
   }
   else if (move === 'scissors') {
     computerScissors.classList.add('choice');
     setTimeout(() => {
       computerScissors.classList.remove('choice');
-    }, timeBetweenMove);
+    }, secondesBetweenNextMove*1000);
   }
   else {
     console.error('Error : Invalid move');
@@ -77,15 +99,15 @@ const computerMoveRender = (move) => {
 const playRound = (playerSelection, computerSelection) => {
   computerMoveRender(computerSelection);
 
-  if (playerSelection === computerSelection) {
+  if (playerSelection === computerSelection) { // draw
     writeAction('Draw !');
     return -1;
   }
   else {
     const p = playerSelection; 
     const c = computerSelection;
-    const win = `You win ! ${p} beats ${c}`;
-    const lose = `You lose ! ${c} beats ${p}`;
+    const win = `You win that move, ${p} beats ${c}`;
+    const lose = `You lose that move, ${c} beats ${p}`;
     if (p === 'rock') {
       if (c === 'paper') {
         writeAction(lose);
@@ -125,7 +147,10 @@ const playRound = (playerSelection, computerSelection) => {
  * @returns {void}
  */
 const score = (point) => {
-  if (point === 1) {
+  const playerScore = document.querySelectorAll('#player-score li');
+  const computerScore = document.querySelectorAll('#computer-score li');
+  if (point === 1) { // player won last move
+    // we add one point
     for (let i = 0 ; i < playerScore.length ; i++) {
       if (playerScore[i].innerHTML === '❌') {
         playerScore[i].innerHTML = '✓';
@@ -133,7 +158,8 @@ const score = (point) => {
       }
     };
   }
-  else if (point === 0) {
+  else if (point === 0) { // computer won last move
+    // we add one point
     for (let i = 0 ; i < computerScore.length ; i++) {
       if (computerScore[i].innerHTML === '❌') {
         computerScore[i].innerHTML = '✓';
@@ -147,6 +173,8 @@ const score = (point) => {
  * Reset the game (score, unlock moves and html)
  */
 const reset = () => {
+  const playerScore = document.querySelectorAll('#player-score li');
+  const computerScore = document.querySelectorAll('#computer-score li');
   playerScore.forEach(element => {
     element.innerHTML = '❌';
   });
@@ -162,15 +190,25 @@ const reset = () => {
  * @returns {number} - 0 = not finish, 1 = player won, 2 = IA won
  */
 const checkEndGame = () => {
-  let isPlayerWin = (playerScore[0].innerHTML === '✓') && (playerScore[1].innerHTML === '✓') && (playerScore[2].innerHTML === '✓');
-  let isComputerWin = (computerScore[0].innerHTML === '✓') && (computerScore[1].innerHTML === '✓') && (computerScore[2].innerHTML === '✓');
-
-  if (isPlayerWin) {
+  const playerScore = document.querySelectorAll('#player-score li');
+  const computerScore = document.querySelectorAll('#computer-score li');
+  let i = 0;
+  while (i < playerScore.length && playerScore[i].innerHTML !== '❌') {
+    i++;
+  }
+  if (i === playerScore.length) { // if player won
     return 1;
   }
-  if (isComputerWin) {
+
+  i = 0;
+  while (i < computerScore.length && computerScore[i].innerHTML !== '❌') {
+    i++;
+  }
+  if (i === computerScore.length) { // if computer won
     return 2;
   }
+
+  // else, no one won for now
   return 0;
 }
 
@@ -194,31 +232,32 @@ const writeAction = (action) => {
  * Play the game
  */
 const game = () => {
-  // Init gameboard
-
-  const resetElt = document.getElementById('reset');
-  resetElt.addEventListener('click', () => {
-    reset();
-  });
-
+  // Init
+  buildMovesToWin();
   const playerMoves = [ 
     { element: playerRock, name: 'rock' }, 
     { element: playerPaper, name: 'paper' }, 
     { element: playerScissors, name: 'scissors' }
   ];
 
+  // Reset
+  const resetElt = document.getElementById('reset');
+  resetElt.addEventListener('click', () => {
+    reset();
+  });
+
   playerMoves.forEach(move => {
-    move.element.addEventListener('click', () => {
+    move.element.addEventListener('click', () => { // player plays
       blockMoves();
       move.element.classList.add('choice');
-      score(playRound(move.name, computerPlay()));
+      score(playRound(move.name, computerPlay())); // test who won or draw
       setTimeout(() => {
-        const isEndGame = checkEndGame();
-        if (isEndGame === 1) {
+        const isEndGame = checkEndGame(); // if someone won
+        if (isEndGame === 1) { // player
           writeAction('Result : You win !!');
           blockMoves();
         }
-        else if (isEndGame === 2) {
+        else if (isEndGame === 2) { // computer
           writeAction('Result : You lose.');
           blockMoves();
         }
@@ -227,9 +266,27 @@ const game = () => {
           unlockMoves();
         }
         move.element.classList.remove('choice');
-      }, timeBetweenMove);
+      }, secondesBetweenNextMove*1000);
     });
+  });
+
+  const configMoves = document.getElementById('moveToWin');
+  configMoves.addEventListener('change', (e) => {
+    reset();
+    if (e.target.value < 1) {
+      movesToWin = 1;
+      e.target.value = 1;
+    }
+    else {
+      movesToWin = e.target.value;
+    }
+    buildMovesToWin();
+  });
+
+  const configSecondesPerMove = document.getElementById('secondesBetWeenMove');
+  configSecondesPerMove.addEventListener('change', (e) => {
+    secondesBetweenNextMove = e.target.value;
   });
 }
 
-game();
+game(); // start !
